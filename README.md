@@ -3,14 +3,8 @@ The repository has been created for interview purposes only.
 
 # Technologies
 
-## Frontend
+1. Frontend - React + Redux
 
-React + Redux
+2. Backend - .Net Core (EF Core, Web API)
 
-## Backend
-
-.Net Core (EF Core, Web API)
-
-## Database
-
-PostgreSQL
+3. Database - PostgreSQL
