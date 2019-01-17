@@ -15,3 +15,13 @@ TODO
 
 1. Frontend - WebStorm
 2. Backend - Visual Studio Code
+
+# Ignored
+
+1. SSL
+2. Authentication
+3. Advanced logging
+4. Error codes
+5. Paging
+6. Styles
+7. Swagger generated API
