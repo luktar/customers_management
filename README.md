@@ -8,8 +8,12 @@ The repository has been created for interview purposes only.
 3. Database - PostgreSQL
 
 # Installation
+(Tested on Windows 10 with `git` and [`cmder`](http://cmder.net/))
 
-TODO
+Install PostgreSQL 11 database on any platform from [here](https://www.postgresql.org/download/windows/).
+Dontet Core 2.2 SDK is required. It can be downloaded from [here](https://dotnet.microsoft.com/download/dotnet-core/2.2).
+Run `npm install` inside `CustomersManagement\ClientApp` directory.
+
 
 # IDE
 
