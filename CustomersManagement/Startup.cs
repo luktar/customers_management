@@ -1,4 +1,5 @@
 
+using CustomersManagement.Db;
 using CustomersManagement.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,12 +33,12 @@ namespace CustomersManagement
             var sqlConnectionString = 
                 Configuration.GetConnectionString("DefaultConnection");
 
-
-
             services.AddEntityFrameworkNpgsql()
                .AddDbContext<CustomersContext>(o =>
                     o.UseNpgsql(sqlConnectionString));
-               
+
+            services.AddTransient<IDbInitializer, DbInitializer>();
+
             services.BuildServiceProvider();
         }
 
