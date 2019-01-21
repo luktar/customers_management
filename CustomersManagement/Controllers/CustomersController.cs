@@ -1,61 +1,95 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-//using CustomersManagement.Models;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using CustomersManagement.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-//namespace CustomersManagement.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class CustomersController : ControllerBase
-//    {
-//        private CustomersContext Db;
+namespace CustomersManagement.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CustomersController : ControllerBase
+    {
+        private CustomersContext Context { get; set; }
 
-//        public CustomersController(CustomersContext db)
-//        {
-//            Db = db;
-//        }
+        public CustomersController(CustomersContext db) => Context = db;
 
-//        private static string[] Summaries = new[]
-//{
-//            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-//        };
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<Customer>> GetAllAsync()
+        {
+            try
+            {
+                return await Context.Customer.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                //TODO: Logging
+                throw;
+            }
+        }
 
-//        [HttpGet("[action]")]
-//        public IEnumerable<WeatherForecast> GetAll()
-//        {
-//            var rng = new Random();
-//            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-//            {
-//                DateFormatted = DateTime.Now.AddDays(index).ToString("d"),
-//                TemperatureC = rng.Next(-20, 55),
-//                Summary = Summaries[rng.Next(Summaries.Length)]
-//            });
-//        }
+        [HttpDelete("[action]/{id}")]
+        public async Task DeleteAsync(int id)
+        {
+            using (var transaction = await Context.Database.BeginTransactionAsync())
+            {
+                try
+                {
 
-//        public class WeatherForecast
-//        {
-//            public string DateFormatted { get; set; }
-//            public int TemperatureC { get; set; }
-//            public string Summary { get; set; }
+                    Customer customer = await Context.Customer.FindAsync(id);
+                    Context.Customer.Remove(customer);
+                    await Context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    // TODO: Logging
+                    throw;
+                }
+            }
+        }
 
-//            public int TemperatureF
-//            {
-//                get
-//                {
-//                    return 32 + (int)(TemperatureC / 0.5556);
-//                }
-//            }
-//        }
+        public void Add(Customer customer)
+        {
+            try
+            {
 
-//        //[HttpGet("[action]")]
-//        //public IEnumerable<Customer> Index()
-//        //{
-//        //    return Db.Customer.ToList();
-//        //}  
+            }
+            catch (Exception e)
+            {
+                // TODO: Logging
+                throw;
+            }
+        }
 
-//    }
-//}
+        public void Update(Customer customer)
+        {
+            try
+            {
+
+            }
+            catch (Exception e)
+            {
+                // TODO: Logging
+                throw;
+            }
+        }
+
+        [HttpGet("[action]/{id}")]
+        public async Task<Customer> GetAsync(int id)
+        {
+            try
+            {
+                return await Context.Customer.FindAsync(id);
+            } catch (Exception e)
+            {
+                // TODO: Logging
+                throw;
+            }
+        }
+    }
+}

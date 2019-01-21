@@ -27,6 +27,8 @@ namespace CustomersManagement
                     IDbInitializer dbInitializer = services.GetRequiredService<IDbInitializer>();
                     dbInitializer.Initialize();
 
+
+
                 }
                 catch (Exception ex)
                 {

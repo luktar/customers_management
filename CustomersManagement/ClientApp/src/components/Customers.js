@@ -5,33 +5,61 @@ export class Customers extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { forecasts: [], loading: true };
-
-        fetch('api/Customers/GetAll')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ forecasts: data, loading: false });
-            });
+        this.state = { customers: [], loading: true };
     }
 
-    static renderForecastsTable(forecasts) {
+    getAllCustomers = () => {
+        fetch('api/Customers/GetAllAsync')
+            .then(response => response.json())
+            .then(x => {
+                this.setState({ customers: x, loading: false });
+            });
+    };
+
+    componentDidMount = () => {
+        this.getAllCustomers();
+    };
+
+
+    deleteHandler = (id) => {
+        if (!window.confirm("Are you sure?"))
+            return;
+        else {
+            fetch('api/Customers/DeleteAsync/' + id, {
+                method: 'delete'
+            }).then((x) => {
+                this.getAllCustomers();
+            });
+        }
+    };
+
+
+    editHandler = (id) => {
+        this.props.history.push("/addcustomer/" + id);
+    };
+
+    renderCustomersTable(customers) {
         return (
             <table className='table table-striped'>
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Temp. (C)</th>
-                        <th>Temp. (F)</th>
-                        <th>Summary</th>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Email</th>
+                        <th>Telephone</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {forecasts.map(forecast =>
-                        <tr key={forecast.dateFormatted}>
-                            <td>{forecast.dateFormatted}</td>
-                            <td>{forecast.temperatureC}</td>
-                            <td>{forecast.temperatureF}</td>
-                            <td>{forecast.summary}</td>
+                    {customers.map(x =>
+                        <tr key={x.id}>
+                            <td>{x.name}</td>
+                            <td>{x.surname}</td>
+                            <td>{x.email}</td>
+                            <td>{x.telephone}</td>
+                            <td>
+                                <button className="btn btn-link" onClick={() => this.editHandler(x.id)}>Edit</button>
+                                <button className="btn btn-link" onClick={() => this.deleteHandler(x.id)}>Delete</button>
+                            </td>  
                         </tr>
                     )}
                 </tbody>
@@ -42,12 +70,12 @@ export class Customers extends Component {
     render() {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : Customers.renderForecastsTable(this.state.forecasts);
+            : this.renderCustomersTable(this.state.customers);
 
         return (
             <div>
-                <h1>Weather forecast</h1>
-                <p>This component demonstrates fetching data from the server.</p>
+                <h1>Customers</h1>
+                <p>This table contains all customers.</p>
                 {contents}
             </div>
         );
