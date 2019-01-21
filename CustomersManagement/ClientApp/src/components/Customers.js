@@ -12,6 +12,7 @@ export class Customers extends Component {
         fetch('api/Customers/GetAllAsync')
             .then(response => response.json())
             .then(x => {
+                x.sort(this.dynamicSort("name"));
                 this.setState({ customers: x, loading: false });
             });
     };
@@ -35,7 +36,7 @@ export class Customers extends Component {
 
 
     editHandler = (id) => {
-        this.props.history.push("/addcustomer/" + id);
+        this.props.history.push("/edit/" + id);
     };
 
     renderCustomersTable(customers) {
@@ -47,6 +48,7 @@ export class Customers extends Component {
                         <th>Surname</th>
                         <th>Email</th>
                         <th>Telephone</th>
+                        <th>Options</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,5 +81,22 @@ export class Customers extends Component {
                 {contents}
             </div>
         );
+    }
+
+    dynamicSort = (property) => {
+        var sortOrder = 1;
+
+        if (property[0] === "-") {
+            sortOrder = -1;
+            property = property.substr(1);
+        }
+
+        return (a, b) => {
+            if (sortOrder === -1) {
+                return b[property].localeCompare(a[property]);
+            } else {
+                return a[property].localeCompare(b[property]);
+            }
+        }
     }
 }

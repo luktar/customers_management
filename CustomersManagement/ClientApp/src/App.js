@@ -13,7 +13,8 @@ export default class App extends Component {
             <Layout>
                 <Route exact path='/' component={Home} />
                 <Route path='/customers' component={Customers} />
-                <Route path='/addcustomer/:id' component={EditCustomer} />
+                <Route path='/edit/:id' component={EditCustomer} />
+                <Route path='/add' component={EditCustomer} />
             </Layout>
         );
     }

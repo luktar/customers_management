@@ -53,29 +53,44 @@ namespace CustomersManagement.Controllers
             }
         }
 
-        public void Add(Customer customer)
+        [HttpPost("[action]")]
+        public async Task AddAsync(Customer customer)
         {
-            try
+            using (var transaction = await Context.Database.BeginTransactionAsync())
             {
-
-            }
-            catch (Exception e)
-            {
-                // TODO: Logging
-                throw;
+                try
+                {
+                    Context.Customer.Add(customer);
+                    await Context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    // TODO: Logging
+                    throw;
+                }
             }
         }
 
-        public void Update(Customer customer)
+        [HttpPut("[action]")]
+        public async Task UpdateAsync(Customer customer)
         {
-            try
-            {
 
-            }
-            catch (Exception e)
+            using (var transaction = await Context.Database.BeginTransactionAsync())
             {
-                // TODO: Logging
-                throw;
+                try
+                {
+                    Context.Entry(customer).State = EntityState.Modified;
+                    await Context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    // TODO: Logging
+                    throw;
+                }
             }
         }
 
