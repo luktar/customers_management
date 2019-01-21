@@ -40,7 +40,7 @@ namespace CustomersManagement.Db
 
             var customers = new List<Customer>
             {
-                new Customer{ Name="Łukasz", Surname="Kowalski", Email = "lukasz.kowalski@company.com", Telephone="+48 444 333 111"},
+                new Customer{ Name="Łukasz", Surname="Kowalski", Email = "lukasz.kowalski@company.com", Telephone="+48 444 333 111" },    
                 new Customer{ Name="Bartosz", Surname="Zieliński", Email = "bartosz.zielinski@company.com", Telephone="+48 444 333 222"},
                 new Customer{ Name="Szczepan", Surname="Małolepszy", Email = "szczepan.malolepszy@company.com", Telephone="+48 444 333 333"},
                 new Customer{ Name="Kamila", Surname="Bystra", Email = "kamila.bystra@company.com", Telephone="+48 444 333 444"},
@@ -56,6 +56,15 @@ namespace CustomersManagement.Db
 
             Context.SaveChanges();
 
+            List<CustomerCity> customerCities = new List<CustomerCity>();
+            customerCities.Add(new CustomerCity { City = warszawa, Customer = customers[0] });
+            customerCities.Add(new CustomerCity { City = katowice, Customer = customers[0] });
+            customerCities.Add(new CustomerCity { City = warszawa, Customer = customers[1] });
+            customerCities.Add(new CustomerCity { City = krakow, Customer = customers[1] });
+
+            Context.CustomerCity.AddRange(customerCities);
+
+            Context.SaveChanges();
         }
     }
 }

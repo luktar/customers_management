@@ -17,8 +17,33 @@ namespace CustomersManagement.Controllers
 
         public CustomersController(CustomersContext db) => Context = db;
 
+        public CustomerData GetCustomerData(Customer customer)
+        {
+            Context.Entry(customer).Collection(b => b.CustomerCity).Load();
+
+            CustomerData result = new CustomerData
+            {
+                Id = customer.Id,
+                Name = customer.Name,
+                Surname = customer.Surname,
+                Email = customer.Email,
+                Telephone = customer.Telephone,
+                Cities = GetCities(customer.CustomerCity)
+            };
+
+            return result;
+
+            List<CityData> GetCities(ICollection<CustomerCity> customerCities)
+            {
+                List<CityData> cities = new List<CityData>();
+                customerCities.ToList().ForEach(x => Context.Entry(x).Reference(b => b.City).Load());
+                customerCities.ToList().ForEach(x => cities.Add(new CityData { Name = x.City.Name, Id = x.CityId }));
+                return cities;
+            }
+        }
+
         [HttpGet("[action]")]
-        public async Task<IEnumerable<Customer>> GetAllAsync()
+        public async Task<List<Customer>> GetAllAsync()
         {
             try
             {
@@ -54,13 +79,30 @@ namespace CustomersManagement.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task AddAsync(Customer customer)
+        public async Task AddAsync(CustomerData customerData)
         {
             using (var transaction = await Context.Database.BeginTransactionAsync())
             {
                 try
                 {
+                    Customer customer = new Customer();
+                    customer.Name = customerData.Name;
+                    customer.Surname = customerData.Surname;
+                    customer.Email = customerData.Email;
+                    customer.Telephone = customerData.Telephone;
+
                     Context.Customer.Add(customer);
+                    await Context.SaveChangesAsync();
+
+                    customerData.Cities.ForEach(x =>
+                    {
+                        customer.CustomerCity.Add(new CustomerCity
+                        {
+                            CityId = x.Id,
+                            Customer = customer
+                        });
+                    });
+
                     await Context.SaveChangesAsync();
                     transaction.Commit();
                 }
@@ -74,14 +116,32 @@ namespace CustomersManagement.Controllers
         }
 
         [HttpPut("[action]")]
-        public async Task UpdateAsync(Customer customer)
+        public async Task UpdateAsync(CustomerData customer)
         {
-
             using (var transaction = await Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    Context.Entry(customer).State = EntityState.Modified;
+                    Customer dbCustomer = Context.Customer.Find(customer.Id);
+                    Context.Entry(dbCustomer).Collection(b => b.CustomerCity).Load();
+                    
+                    foreach(CityData cityData in customer.Cities)
+                    {
+                        if (!dbCustomer.CustomerCity.Any(x => x.Id == cityData.Id))
+                        {
+                            Context.CustomerCity.Add(
+                                new CustomerCity { CityId = cityData.Id, CustomerId = dbCustomer.Id });
+                        }
+                    }
+
+                    dbCustomer.CustomerCity.ToList().ForEach(x =>
+                    {
+                        if (!customer.Cities.Any(y => y.Id == x.CityId))
+                        {
+                            Context.Remove(x);
+                        }
+                    });
+
                     await Context.SaveChangesAsync();
                     transaction.Commit();
                 }
@@ -95,16 +155,34 @@ namespace CustomersManagement.Controllers
         }
 
         [HttpGet("[action]/{id}")]
-        public async Task<Customer> GetAsync(int id)
+        public async Task<CustomerData> GetAsync(int id)
         {
             try
             {
-                return await Context.Customer.FindAsync(id);
+                Customer customer = await Context.Customer.FindAsync(id);
+                return GetCustomerData(customer);
             } catch (Exception e)
             {
                 // TODO: Logging
                 throw;
             }
+        }
+
+        public class CityData
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        public class CustomerData
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string Surname { get; set; }
+            public string Email { get; set; }
+            public string Telephone { get; set; }
+
+            public List<CityData> Cities { get; set; }
         }
     }
 }

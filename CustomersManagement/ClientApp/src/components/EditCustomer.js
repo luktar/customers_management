@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Button, FormGroup, Label, Input } from 'reactstrap';
 
 export class EditCustomer extends Component {
     static displayName = EditCustomer.name;
@@ -21,7 +21,13 @@ export class EditCustomer extends Component {
             title: title,
             loading: true,
             cityList: [],
-            customer: {},
+            customer: {
+                name: "",
+                surname: "",
+                email: "",
+                telephone: "",
+                cities: []
+            },
             edit: edit
         };
     }
@@ -36,26 +42,14 @@ export class EditCustomer extends Component {
     };
 
     initCustomer = () => {
-        if (!this.state.edit) {
-            this.setState(
-                {
-                    customer: {
-                        name: "",
-                        surname: "",
-                        email: "",
-                        telephone: "",
-
-                    }
-                })
-        } else {
+        if (this.state.edit) {
             fetch('api/Customers/GetAsync/' + this.customerId)
                 .then(r => r.json())
                 .then(data => {
                     this.setState({ customer: data });
                 });
         }
-
-        this.setState({ loading: false })
+        this.setState({ loading: false });
     }
 
     componentDidMount = () => {
@@ -98,9 +92,22 @@ export class EditCustomer extends Component {
     cancelHandler = (e) => {
         e.preventDefault();
         this.props.history.push("/customers");
-    }  
+    }
 
-    renderCreateForm = (cityList) => {
+    cityChangedHandler = (id, e) => {
+        let customer = { ...this.state.customer };
+        if (this.state.customer.cities.some(y => y.id === id)) {
+            customer.cities = customer.cities.filter(x => x.id !== id);
+
+        } else {
+            customer.cities.push(
+                this.state.cityList.find(x => x.id === id));
+        }
+        this.setState({ customer: customer });
+
+    }
+
+    renderCreateForm = () => {
         return (
             <form onSubmit={this.handleSave} >
                 <FormGroup >
@@ -119,10 +126,20 @@ export class EditCustomer extends Component {
                     <Label >Telephone</Label>
                     <Input type="text" name="telephone" placeholder="Enter customer telephone..." value={this.state.customer.telephone} onChange={this.changeHandler} />
                 </FormGroup >
-                <div className="form-group">
-                    <button type="submit" className="btn btn-default">Save</button>
-                    <button className="btn" onClick={this.cancelHandler}>Cancel</button>
-                </div >
+                <FormGroup check>
+                    <Label >Cities</Label>
+                    {
+                        this.state.cityList.map(x => {
+
+                            return (<div>
+                                <Input checked={this.state.customer.cities.some(y => y.id === x.id)} type="checkbox" id={x.id} name={x.name} onChange={(e) => this.cityChangedHandler(x.id, e)} />
+                                <Label for={x.id} check>{x.name}</Label>
+                            </div>);
+                        })
+                    }
+                </FormGroup>
+                <Button color="link" >Submit</Button>
+                <Button color="link" onClick={this.cancelHandler}>Cancel</Button>
             </form >
         )
     };
@@ -130,7 +147,7 @@ export class EditCustomer extends Component {
     render = () => {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : this.renderCreateForm(this.state.cityList);
+            : this.renderCreateForm();
 
         return <div className="col-md-6">
             <h1>{this.state.title}</h1>
