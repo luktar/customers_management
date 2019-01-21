@@ -3,9 +3,9 @@ The repository has been created for interview purposes only.
 
 # Technologies
 
-1. Frontend - React + Redux
-2. Backend - .Net Core (EF Core, Web API)
-3. Database - PostgreSQL
+1. Frontend - React 16.0.0
+2. Backend - .Net Core 2.2
+3. Database - PostgreSQL 11
 
 # Installation
 (Tested on Windows 10 with `git` and [`cmder`](http://cmder.net/))
@@ -14,13 +14,11 @@ The repository has been created for interview purposes only.
 2. Dontet Core 2.2 SDK is required. It can be downloaded from [here](https://dotnet.microsoft.com/download/dotnet-core/2.2).
 3. Run `npm install` inside `CustomersManagement\ClientApp` directory.
 
-
 # IDE
 
-1. Frontend - WebStorm
-2. Backend - Visual Studio Code
+Visual Studio 2017
 
-# Ignored
+# Not implemented
 
 1. SSL
 2. Authentication
@@ -29,3 +27,4 @@ The repository has been created for interview purposes only.
 5. Paging
 6. Styles
 7. Swagger generated API
+8. Validation (only basic)
