@@ -65,6 +65,7 @@ namespace CustomersManagement.Controllers
                 {
 
                     Customer customer = await Context.Customer.FindAsync(id);
+
                     Context.Customer.Remove(customer);
                     await Context.SaveChangesAsync();
                     transaction.Commit();

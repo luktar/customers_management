@@ -105,7 +105,7 @@ namespace CustomersManagement.Models
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.CustomerCity)
                     .HasForeignKey(d => d.CustomerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("customer_city_customer_id_fk");
             });
 
