@@ -2,7 +2,13 @@
 The repository has been created for interview purposes only.
 It's a CRUD application made by using dotnet core 2.2, entity framework, ReactJS and PostreSQL database.
 
+## List
 
+![List](1.png)
+
+## Details
+
+![Details](2.png)
 
 # Technologies
 
