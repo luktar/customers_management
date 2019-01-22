@@ -1,6 +1,5 @@
 # Introduction
-The repository has been created for interview purposes only.
-It's a CRUD application made by using dotnet core 2.2, entity framework, ReactJS and PostreSQL database.
+CRUD application made by using dotnet core 2.2, entity framework, ReactJS and PostreSQL database.
 
 ## List
 
