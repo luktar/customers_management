@@ -23,7 +23,7 @@ It's a CRUD application made by using dotnet core 2.2, entity framework, ReactJS
 1. Dotnet Core 2.2 SDK is required. It can be downloaded from [here](https://dotnet.microsoft.com/download/dotnet-core/2.2).
 1. Run `npm install` inside `CustomersManagement\ClientApp` directory.
 1. Run `dotnet build` to build .net core app.
-1. Run `dotnet run` command to run application. It should start on http:\\localhost:5000 but make sure by following the console output.
+1. Run `dotnet run` command to run application. It should start on http://localhost:5000 but make sure by following the console output.
 
 # IDE
 
